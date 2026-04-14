@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  playwright:
+    build: ./src
+    container_name: playwright-scraping
+    networks:
+      - airflow-net
+
+  airflow:
+    image: apache/airflow:2.10.0
+    container_name: airflow
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor 
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin123
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+    command: standalone
+    networks:
+      - airflow-net
+
+networks:
+  airflow-net:
+    driver: bridge
