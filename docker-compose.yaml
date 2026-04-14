@@ -20,7 +20,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - "80:80"
+      - "1000:1000"
     command: standalone
     networks:
       - airflow-net
